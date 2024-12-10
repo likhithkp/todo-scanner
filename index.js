@@ -14,25 +14,16 @@ function scanForTodos(directoryPath) {
 
         const files = fs.readdirSync(directoryPath);
 
-        console.log('Scanning files in directory:', directoryPath);
-        console.log('Files found:', files);
-
         files.forEach(file => {
             const filePath = path.join(directoryPath, file);
 
-            // Debug log for the file path being processed
-            console.log('Processing file:', filePath);
-
             // If the file is a directory, recursively scan it
             if (fs.statSync(filePath).isDirectory()) {
-                console.log('Directory found, scanning subdirectory:', filePath);
                 todoList = todoList.concat(scanForTodos(filePath));
-            } else if (file.endsWith('.js')) {
+            } else if (file.endsWith('.js') || file.endsWith('.jsx') || file.endsWith('.ts')) {
                 const fileContent = fs.readFileSync(filePath, 'utf-8');
                 const regex = /TODO:\s*(.*)/g;  // Match 'TODO: some task' (with optional spaces after TODO:)
                 let match;
-
-                console.log('File content:', fileContent); // Log the content to ensure it’s being read
 
                 while ((match = regex.exec(fileContent)) !== null) {
                     // Count the line number where the TODO is found
@@ -42,8 +33,6 @@ function scanForTodos(directoryPath) {
                         line: lineNumber,
                         todo: match[1]
                     });
-
-                    console.log(`Found TODO: ${match[1]} on line ${lineNumber}`);
                 }
             }
         });
