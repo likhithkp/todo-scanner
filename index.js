@@ -4,6 +4,12 @@ const path = require('path');
 function scanForTodos(directoryPath) {
     let todoList = [];
 
+    // Check if directory exists
+    if (!fs.existsSync(directoryPath)) {
+        console.log(`Error: Directory "${directoryPath}" does not exist.`);
+        return todoList; // Return empty list to avoid further processing
+    }
+
     const files = fs.readdirSync(directoryPath);
 
     files.forEach(file => {
@@ -37,5 +43,9 @@ function printTodos(todoList) {
     }
 }
 
-const todos = scanForTodos('./src');
+// Set the directory to scan
+const directoryToScan = './src';
+
+// Scan and print TODOs
+const todos = scanForTodos(directoryToScan);
 printTodos(todos);
