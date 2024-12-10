@@ -1,6 +1,6 @@
 {
   "name": "@likhithkp/todo-scanner",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "license": "MIT",
   "description": "Todo-scanner is a lightweight Node.js utility that scans your codebase for `TODO` comments and lists them with their file locations and line numbers.",
