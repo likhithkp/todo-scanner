@@ -6,17 +6,26 @@ function scanForTodos(directoryPath) {
     let todoList = [];
 
     try {
+        // Check if the directory exists before scanning
+        if (!fs.existsSync(directoryPath)) {
+            console.error("Directory not found:", directoryPath);
+            return todoList;
+        }
+
         const files = fs.readdirSync(directoryPath);
 
-        console.log('Files in directory:', files);
+        console.log('Scanning files in directory:', directoryPath);
+        console.log('Files found:', files);
 
         files.forEach(file => {
             const filePath = path.join(directoryPath, file);
 
+            // Debug log for the file path being processed
             console.log('Processing file:', filePath);
 
             // If the file is a directory, recursively scan it
             if (fs.statSync(filePath).isDirectory()) {
+                console.log('Directory found, scanning subdirectory:', filePath);
                 todoList = todoList.concat(scanForTodos(filePath));
             } else if (file.endsWith('.js')) {
                 const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -60,9 +69,5 @@ function printTodos(todoList) {
 const directoryPath = process.argv[2] || './src';  // Allow passing directory as an argument
 console.log('Scanning directory:', directoryPath);  // Debug the passed path
 
-if (fs.existsSync(directoryPath)) {
-    const todos = scanForTodos(directoryPath);
-    printTodos(todos);
-} else {
-    console.error("The specified directory does not exist.");
-}
+const todos = scanForTodos(directoryPath);
+printTodos(todos);
