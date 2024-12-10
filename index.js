@@ -8,8 +8,12 @@ function scanForTodos(directoryPath) {
     try {
         const files = fs.readdirSync(directoryPath);
 
+        console.log('Files in directory:', files);
+
         files.forEach(file => {
             const filePath = path.join(directoryPath, file);
+
+            console.log('Processing file:', filePath);
 
             // If the file is a directory, recursively scan it
             if (fs.statSync(filePath).isDirectory()) {
@@ -18,14 +22,19 @@ function scanForTodos(directoryPath) {
                 const fileContent = fs.readFileSync(filePath, 'utf-8');
                 const regex = /TODO:\s*(.*)/g;  // Match 'TODO: some task' (with optional spaces after TODO:)
                 let match;
+
+                console.log('File content:', fileContent); // Log the content to ensure it’s being read
+
                 while ((match = regex.exec(fileContent)) !== null) {
-                    // Count the line number
+                    // Count the line number where the TODO is found
                     const lineNumber = fileContent.slice(0, match.index).split('\n').length;
                     todoList.push({
                         file: filePath,
                         line: lineNumber,
                         todo: match[1]
                     });
+
+                    console.log(`Found TODO: ${match[1]} on line ${lineNumber}`);
                 }
             }
         });
@@ -48,7 +57,9 @@ function printTodos(todoList) {
 }
 
 // Ensure the directory exists and call the function
-const directoryPath = './src';
+const directoryPath = process.argv[2] || './src';  // Allow passing directory as an argument
+console.log('Scanning directory:', directoryPath);  // Debug the passed path
+
 if (fs.existsSync(directoryPath)) {
     const todos = scanForTodos(directoryPath);
     printTodos(todos);
